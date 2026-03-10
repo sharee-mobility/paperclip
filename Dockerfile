@@ -32,16 +32,14 @@ RUN test -f server/dist/index.js || (echo "ERROR: server build output missing" &
 
 FROM base AS production
 WORKDIR /app
-COPY --chown=node:node --from=build /app /app
+COPY --from=build /app /app
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends gosu locales \
+  && apt-get install -y --no-install-recommends locales \
   && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
   && locale-gen \
   && rm -rf /var/lib/apt/lists/* \
   && npm install --global --omit=dev @anthropic-ai/claude-code@latest @openai/codex@latest opencode-ai \
-  && mkdir -p /paperclip \
-  && chown node:node /paperclip
-COPY --chmod=755 docker-entrypoint.sh /docker-entrypoint.sh
+  && mkdir -p /paperclip
 
 ENV NODE_ENV=production \
   HOME=/paperclip \
@@ -57,5 +55,4 @@ ENV NODE_ENV=production \
 VOLUME ["/paperclip"]
 EXPOSE 3100
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["node", "--import", "./server/node_modules/tsx/dist/loader.mjs", "server/dist/index.js"]
