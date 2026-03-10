@@ -334,6 +334,7 @@ export async function startServer(): Promise<StartedServer> {
         password: "paperclip",
         port,
         persistent: true,
+        // @ts-ignore - createPostgresUser exists at runtime but is missing from the local types resolution
         createPostgresUser: true,
         onLog: appendEmbeddedPostgresLog,
         onError: appendEmbeddedPostgresLog,
