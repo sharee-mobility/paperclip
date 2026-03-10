@@ -1,6 +1,7 @@
 #!/bin/sh
 set -e
 
+echo "[entrypoint] Fixing /paperclip ownership..."
 chown -R node:node /paperclip
 
 # Clean up incomplete embedded postgres init.
